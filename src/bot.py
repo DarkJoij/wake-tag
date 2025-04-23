@@ -30,6 +30,8 @@ class TelegramBot:
         )
 
     async def handlers(self) -> None:
+        self.me = await self.client.get_me()
+
         @self.client.on(NewMessage(incoming=True, func=lambda c: c.is_private))
         async def empty_message(event) -> None:
             if not (match("^/help$", event.message.text) or match("^/start$", event.message.text)):
@@ -54,7 +56,8 @@ class TelegramBot:
 
             await event.reply(tag_text)
 
-        @self.client.on(NewMessage(pattern="^/start*", incoming=True))
+        @self.client.on(NewMessage(pattern="^/start$", incoming=True))
+        @self.client.on(NewMessage(pattern=f"^/start@{self.me.username}", incoming=True))
         async def start_command(event) -> None:
             await event.client.send_message(
                 event.chat_id,
@@ -64,7 +67,8 @@ class TelegramBot:
 Для инструкций используйте /help."""
             )
         
-        @self.client.on(NewMessage(pattern="^/help*", incoming=True))
+        @self.client.on(NewMessage(pattern="^/help$", incoming=True))
+        @self.client.on(NewMessage(pattern=f"^/help@{self.me.username}", incoming=True))
         async def help_command(event) -> None:
             await event.client.send_message(
                 event.chat_id,
