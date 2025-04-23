@@ -54,7 +54,7 @@ class TelegramBot:
 
             await event.reply(tag_text)
 
-        @self.client.on(NewMessage(pattern="^/start$", incoming=True))
+        @self.client.on(NewMessage(pattern="^/start*", incoming=True))
         async def start_command(event) -> None:
             await event.client.send_message(
                 event.chat_id,
@@ -64,7 +64,7 @@ class TelegramBot:
 Для инструкций используйте /help."""
             )
         
-        @self.client.on(NewMessage(pattern="^/help$", incoming=True))
+        @self.client.on(NewMessage(pattern="^/help*", incoming=True))
         async def help_command(event) -> None:
             await event.client.send_message(
                 event.chat_id,
