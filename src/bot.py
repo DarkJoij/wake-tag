@@ -35,12 +35,9 @@ class TelegramBot:
             if not (match("^/help$", event.message.text) or match("^/start$", event.message.text)):
                 await event.client.send_message(
                     event.chat_id,
-                    """Привет, я позволяю реализовать функционал тега @all в групповых чатах Telegram. 
-Добавь меня в группу и начни пользоваться всеми функциями.\n\n
-Hi, I'm allowing you to implement the functionality of the @all tag in Telegram group chats.
-Add me to the group and start using all the features."""
+                    "Для взаимодействия используйте команды /start и /help."
                 )
-
+                
         @self.client.on(NewMessage(pattern='^@all$', incoming=True, func=lambda c: c.is_group))
         async def all_tag(event: CallbackQuery) -> None:
             tag_text = str()
@@ -56,10 +53,19 @@ Add me to the group and start using all the features."""
                 tag_text += f"@{user.username} "
 
             await event.reply(tag_text)
+
+        @self.client.on(NewMessage(pattern="^/start$", incoming=True))
+        async def start_command(event) -> None:
+            await event.client.send_message(
+                event.chat_id,
+                """Привет, я позволяю реализовать функционал тега @all в групповых чатах Telegram. 
+Добавь меня в группу и начни пользоваться всеми функциями.
+
+Для инструкций используйте /help."""
+            )
         
-        @self.client.on(NewMessage(pattern='^/help$', incoming=True))
-        @self.client.on(NewMessage(pattern='^/start$', incoming=True))
-        async def start_help_command(event) -> None:
+        @self.client.on(NewMessage(pattern="^/help$", incoming=True))
+        async def help_command(event) -> None:
             await event.client.send_message(
                 event.chat_id,
                 """Используйте тег `@all` чтобы упомянуть всех участников в любом групповом чате."""
